@@ -8,24 +8,22 @@ const ProfitLeakDetector: React.FC = () => {
   const [input, setInput] = useState('');
   const [result, setResult] = useState<AuditResult | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  // Changed error state to hold the string message
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleAudit = async () => {
     if (!input.trim()) return;
     setLoading(true);
     setResult(null);
-    setError(false);
+    setErrorMessage(null);
     
     try {
       const data = await generateAudit(input);
-      if (data) {
-        setResult(data);
-      } else {
-        setError(true);
-      }
-    } catch (e) {
+      setResult(data);
+    } catch (e: any) {
       console.error(e);
-      setError(true);
+      // Set specific error message from the service
+      setErrorMessage(e.message || "Analysis failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -58,10 +56,10 @@ const ProfitLeakDetector: React.FC = () => {
                 {loading ? <><Loader2 className="animate-spin" /> Analyzing...</> : <><BrainCircuit size={20} /> Analyze My Business ✨</>}
               </Button>
               
-              {error && (
+              {errorMessage && (
                 <div className="flex items-center gap-2 text-red-300 bg-red-900/20 px-4 py-2 rounded-lg border border-red-500/30">
-                  <AlertCircle size={16} />
-                  <span className="text-sm">Analysis failed. Please try again.</span>
+                  <AlertCircle size={16} className="flex-shrink-0" />
+                  <span className="text-sm font-medium">{errorMessage}</span>
                 </div>
               )}
             </div>
