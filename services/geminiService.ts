@@ -1,8 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AuditResult } from "../types";
 
-// Using the specific model requested by the user
-const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
+// Using the recommended model for text tasks
+const MODEL_NAME = "gemini-3-flash-preview";
 
 export const generateAudit = async (problem: string): Promise<AuditResult | null> => {
   try {
@@ -15,7 +15,9 @@ export const generateAudit = async (problem: string): Promise<AuditResult | null
       A business owner has this problem: "${problem}". 
       
       Task:
-      1. Estimate "Annualized Profit Bleed" for a $5M revenue business. Give a scary but realistic dollar range based on the problem.
+      1. Analyze "Financial Impact". 
+         - IF the user input contains specific numbers (revenue, costs, etc.), calculate a realistic "Annualized Profit Bleed" in dollars.
+         - IF NO numbers are provided, provide a short, punchy qualitative assessment (e.g., "High Risk: Margin Erosion", "Critical: Cash Flow Stagnation"). DO NOT invent a dollar amount or a hypothetical revenue baseline.
       2. Provide a 3-step "Triage Plan" using professional, high-level financial terms.
       
       Format the response strictly as JSON.`,
@@ -26,7 +28,7 @@ export const generateAudit = async (problem: string): Promise<AuditResult | null
           properties: {
             bleed_estimate: {
               type: Type.STRING,
-              description: "The estimated dollar amount of profit lost annually.",
+              description: "The estimated dollar amount OR qualitative impact assessment.",
             },
             triage_plan: {
               type: Type.ARRAY,

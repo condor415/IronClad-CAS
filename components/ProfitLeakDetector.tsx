@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Loader2, BrainCircuit } from 'lucide-react';
+import { Sparkles, Loader2, BrainCircuit, AlertCircle } from 'lucide-react';
 import Button from './Button';
 import { generateAudit } from '../services/geminiService';
 import { AuditResult } from '../types';
@@ -8,17 +8,24 @@ const ProfitLeakDetector: React.FC = () => {
   const [input, setInput] = useState('');
   const [result, setResult] = useState<AuditResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleAudit = async () => {
     if (!input.trim()) return;
     setLoading(true);
-    setResult(null); // Clear previous result
+    setResult(null);
+    setError(false);
     
     try {
       const data = await generateAudit(input);
-      setResult(data);
+      if (data) {
+        setResult(data);
+      } else {
+        setError(true);
+      }
     } catch (e) {
       console.error(e);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -46,10 +53,17 @@ const ProfitLeakDetector: React.FC = () => {
               placeholder="e.g. We keep hiring people but our profit margin isn't going up..."
               className="w-full bg-[#051120] border border-[#D4DBE2]/20 rounded-xl p-4 text-white focus:outline-none focus:ring-2 focus:ring-[#C47F2A] min-h-[100px] placeholder:text-slate-500"
             />
-            <div className="flex justify-center">
+            <div className="flex justify-center flex-col items-center gap-4">
               <Button onClick={handleAudit} variant="ai" disabled={loading || !input.trim()}>
                 {loading ? <><Loader2 className="animate-spin" /> Analyzing...</> : <><BrainCircuit size={20} /> Analyze My Business ✨</>}
               </Button>
+              
+              {error && (
+                <div className="flex items-center gap-2 text-red-300 bg-red-900/20 px-4 py-2 rounded-lg border border-red-500/30">
+                  <AlertCircle size={16} />
+                  <span className="text-sm">Analysis failed. Please try again.</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -57,7 +71,7 @@ const ProfitLeakDetector: React.FC = () => {
           {result && (
             <div className="mt-8 bg-[#051120] rounded-xl border border-red-500/50 p-6 grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div>
-                <p className="text-[#D4DBE2] text-sm uppercase tracking-wider font-bold mb-2">Estimated Annual Bleed</p>
+                <p className="text-[#D4DBE2] text-sm uppercase tracking-wider font-bold mb-2">Financial Impact Analysis</p>
                 <p className="text-3xl md:text-4xl font-extrabold text-white">{result.bleed_estimate}</p>
               </div>
               <div>
