@@ -9,6 +9,21 @@ interface NavbarProps {
   setView: (view: ViewState) => void;
 }
 
+const LogoIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
+    {/* Shield Background */}
+    <path d="M50 0C50 0 15 5 5 35V60C5 85 50 120 50 120C50 120 95 85 95 60V35C85 5 50 0 50 0Z" fill="#0B1F3A"/>
+    
+    {/* Graph Bars */}
+    <rect x="25" y="55" width="10" height="35" rx="2" fill="white"/>
+    <rect x="45" y="40" width="10" height="50" rx="2" fill="white"/>
+    <rect x="65" y="50" width="10" height="40" rx="2" fill="white"/>
+    
+    {/* Checkmark */}
+    <path d="M50 95L65 110L95 65" stroke="#C47F2A" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 const Navbar: React.FC<NavbarProps> = ({ onCtaClick, currentView, setView }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -34,9 +49,16 @@ const Navbar: React.FC<NavbarProps> = ({ onCtaClick, currentView, setView }) => 
         <div className="flex justify-between items-center h-20">
           
           {/* Logo Area */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavClick('top')}>
-             {/* Replaced icon with logo image. Assumes logo.png is in the public folder. */}
-             <img src="/logo.png" alt="IronClad CAS" className="h-12 w-auto" />
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavClick('top')}>
+             <LogoIcon />
+             <div className="flex flex-col">
+                <span className="text-[#0B1F3A] font-extrabold text-2xl tracking-tighter leading-none">
+                  IronClad
+                </span>
+                <span className="text-[#C47F2A] font-bold text-lg tracking-widest leading-none">
+                  CAS
+                </span>
+             </div>
           </div>
 
           {/* Desktop Nav */}
