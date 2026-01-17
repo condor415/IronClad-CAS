@@ -6,11 +6,11 @@ const MODEL_NAME = "gemini-3-flash-preview";
 
 export const generateAudit = async (problem: string): Promise<AuditResult> => {
   // Check for API key existence to provide clear debugging
-  // Note: process.env.API_KEY is replaced by Vite at build time based on your configuration
   const apiKey = process.env.API_KEY;
   
   if (!apiKey || apiKey === 'undefined' || apiKey === '') {
-    throw new Error("API Key is missing. Check your environment variables (API_KEY or VITE_API_KEY).");
+    // Specific error for Vercel users
+    throw new Error("API Key is missing. Go to Vercel > Settings > Environment Variables, add 'VITE_API_KEY', and then REDEPLOY the project.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -70,7 +70,7 @@ export const generateAudit = async (problem: string): Promise<AuditResult> => {
     
     // Provide friendlier error messages for common issues
     if (error.message?.includes("403") || error.message?.includes("API key")) {
-      throw new Error("Invalid API Key or Permissions. Please check your API key.");
+      throw new Error("Invalid API Key. Please check your Vercel Environment Variables.");
     }
     if (error.message?.includes("429")) {
       throw new Error("System is busy (Quota Exceeded). Please try again in a minute.");
