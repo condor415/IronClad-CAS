@@ -5,12 +5,27 @@ import { AuditResult } from "../types";
 const MODEL_NAME = "gemini-3-flash-preview";
 
 export const generateAudit = async (problem: string): Promise<AuditResult> => {
-  // Check for API key existence to provide clear debugging
-  const apiKey = process.env.API_KEY;
+  // ROBUST KEY CHECKING:
+  // 1. Try the standard Node/Build injected key (process.env.API_KEY)
+  // 2. Try the Vite-specific Client key (import.meta.env.VITE_API_KEY)
+  // This "Double Check" fixes most Vercel deployment issues.
+  let apiKey = process.env.API_KEY;
+  
+  // Fallback for Vite/Vercel if the process.env injection missed
+  if (!apiKey || apiKey.length === 0) {
+    // @ts-ignore - ignoring typescript warning for import.meta in some configs
+    apiKey = import.meta.env.VITE_API_KEY;
+  }
+  
+  // Debug logging to help you (Check your browser console with F12)
+  if (apiKey) {
+     console.log(`Gemini API: Key found (starts with ${apiKey.substring(0, 4)}...)`);
+  } else {
+     console.error("Gemini API: Key is completely MISSING in both process.env and import.meta.env");
+  }
   
   if (!apiKey || apiKey === 'undefined' || apiKey === '') {
-    // Specific error for Vercel users
-    throw new Error("API Key is missing. Go to Vercel > Settings > Environment Variables, add 'VITE_API_KEY', and then REDEPLOY the project.");
+    throw new Error("API Key is missing. Please check Vercel > Settings > Environment Variables. Ensure it is named 'VITE_API_KEY'. Then Redeploy.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -68,9 +83,9 @@ export const generateAudit = async (problem: string): Promise<AuditResult> => {
   } catch (error: any) {
     console.error("Gemini API Error:", error);
     
-    // Provide friendlier error messages for common issues
+    // Provide friendlier error messages
     if (error.message?.includes("403") || error.message?.includes("API key")) {
-      throw new Error("Invalid API Key. Please check your Vercel Environment Variables.");
+      throw new Error("Invalid API Key. The key exists but Google rejected it. Check if the key is active in Google AI Studio.");
     }
     if (error.message?.includes("429")) {
       throw new Error("System is busy (Quota Exceeded). Please try again in a minute.");
