@@ -78,7 +78,7 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
         phone: formData.phone
       });
     } else {
-      window.open("https://calendly.com/leeserel/30min", "_blank");
+      window.open("https://calendly.com/ironcladcas/30min", "_blank");
     }
   };
 

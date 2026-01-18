@@ -8,7 +8,7 @@ interface CalendlyModalProps {
   prefillData?: LeadData;
 }
 
-const BASE_CALENDLY_URL = "https://calendly.com/leeserel/30min"; 
+const BASE_CALENDLY_URL = "https://calendly.com/ironcladcas/30min"; 
 
 const CalendlyModal: React.FC<CalendlyModalProps> = ({ isOpen, onClose, prefillData }) => {
   useEffect(() => {
