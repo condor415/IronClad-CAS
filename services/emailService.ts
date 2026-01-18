@@ -17,6 +17,7 @@ export const sendAuditNotification = async (data: AuditData) => {
   }
 
   try {
+    console.log("IronClad System: Sending audit data to admin...");
     const response = await fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -37,9 +38,9 @@ export const sendAuditNotification = async (data: AuditData) => {
     });
 
     if (response.ok) {
-        console.log("IronClad System: Audit submission sent to admin.");
+        console.log("IronClad System: Audit submission sent to admin successfully.");
     } else {
-        console.error("IronClad System: Failed to send audit submission.");
+        console.error("IronClad System: Failed to send audit submission. Status:", response.status);
     }
   } catch (error) {
     console.error("IronClad System: Network error sending audit submission.", error);

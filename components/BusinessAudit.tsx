@@ -55,7 +55,7 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
     setResult(null);
 
     // 1. Send Email Notification (Fire and forget)
-    // We send this immediately so we capture the lead even if the AI analysis fails or takes time.
+    console.log("Submitting audit, sending email notification...");
     sendAuditNotification(formData).catch(err => console.error("Email dispatch error:", err));
     
     // 2. Generate AI Audit
