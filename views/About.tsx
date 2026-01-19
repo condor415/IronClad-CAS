@@ -19,9 +19,9 @@ const About: React.FC<AboutProps> = ({ onCtaClick }) => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-24 grid md:grid-cols-2 gap-16 items-center">
         <div>
-          <h2 className="text-3xl font-bold text-[#0B1F3A] mb-6">Built by CPAs. Designed for Business Owners.</h2>
+          <h2 className="text-3xl font-bold text-[#0B1F3A] mb-6">Built by Financial Experts. Designed for Business Owners.</h2>
           <p className="text-[#0B1F3A]/80 text-lg mb-4 leading-relaxed">
-            IronClad is led by CPAs with Controller, CFO, and Big Four experience, having worked with companies ranging from $5 million to over $1 billion in revenue. We bring institutional-grade financial rigor to Main Street and the Middle Market, making elite financial strategy accessible to growing businesses.
+            IronClad is led by seasoned executives with Controller, CFO, and Big Four experience, having worked with companies ranging from $5 million to over $1 billion in revenue. We bring institutional-grade financial rigor to Main Street and the Middle Market, making elite financial strategy accessible to growing businesses.
           </p>
           <p className="text-[#0B1F3A]/80 text-lg mb-4 leading-relaxed">
             We possess deep real estate experience covering acquisition, disposition, advisory, and financing. We understand the deal lifecycle and the capital stack.
@@ -43,7 +43,7 @@ const About: React.FC<AboutProps> = ({ onCtaClick }) => {
         {/* Stats/Badges */}
         <div className="grid gap-6">
           {[
-            {icon: Award, title: "CPA Led", sub: "Enterprise CFO Experience"},
+            {icon: Award, title: "Executive Led", sub: "Enterprise CFO Experience"},
             {icon: Briefcase, title: "25+ Years", sub: "Combined Experience"},
             {icon: LineChart, title: "Growth Focused", sub: "Strategic Advisory"}
           ].map((stat, i) => (

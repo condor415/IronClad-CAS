@@ -211,7 +211,7 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
                     { val: 'Bookkeeper', label: 'I have a part-time bookkeeper' },
                     { val: 'In-House', label: 'I have full-time in-house staff' },
                     { val: 'Spreadsheets', label: 'Excel / Spreadsheets / Shoebox' },
-                    { val: 'CPA Firm', label: 'My tax CPA handles it (once a year)' }
+                    { val: 'External Firm', label: 'My tax professional handles it (once a year)' }
                 ].map(opt => (
                     <button
                         key={opt.val}
