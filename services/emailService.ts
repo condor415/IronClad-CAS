@@ -25,6 +25,7 @@ export const sendAuditNotification = async (data: AuditData) => {
       },
       body: JSON.stringify({
         _subject: `New Business Audit: ${data.businessName}`, // Formspree special field for subject line
+        contactName: data.contactName,
         businessName: data.businessName,
         industry: data.industry,
         email: data.email,

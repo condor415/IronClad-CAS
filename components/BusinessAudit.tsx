@@ -3,6 +3,7 @@ import { Sparkles, Loader2, ArrowRight, Check, AlertCircle } from 'lucide-react'
 import Button from './Button';
 import { generateAudit } from '../services/geminiService';
 import { sendAuditNotification } from '../services/emailService';
+import { submitToHubSpot } from '../services/hubspotService';
 import { AuditResult, AuditData, LeadData } from '../types';
 
 interface BusinessAuditProps {
@@ -16,6 +17,7 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
   const [result, setResult] = useState<AuditResult | null>(null);
 
   const [formData, setFormData] = useState<AuditData>({
+    contactName: '',
     businessName: '',
     industry: '',
     email: '',
@@ -47,33 +49,10 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
     setStep(prev => prev + 1);
   };
 
-  const handleSubmit = async () => {
-    if (!formData.industry || !formData.revenue) return;
-    
-    setLoading(true);
-    setErrorMessage(null);
-    setResult(null);
-
-    // 1. Send Email Notification (Fire and forget)
-    console.log("Submitting audit, sending email notification...");
-    sendAuditNotification(formData).catch(err => console.error("Email dispatch error:", err));
-    
-    // 2. Generate AI Audit
-    try {
-      const data = await generateAudit(formData);
-      setResult(data);
-      setStep(5); // Move to results step
-    } catch (e: any) {
-      console.error(e);
-      setErrorMessage(e.message || "Analysis failed. Please try again.");
-      setLoading(false);
-    }
-  };
-
   const handleReviewClick = () => {
     if (onCtaClick) {
       onCtaClick({
-        name: formData.businessName, // Using business name as proxy for name if no contact name, or add contact name field
+        name: formData.contactName || formData.businessName,
         email: formData.email,
         phone: formData.phone
       });
@@ -82,9 +61,47 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
     }
   };
 
+  const handleSubmit = async () => {
+    if (!formData.industry || !formData.revenue) return;
+    
+    setLoading(true);
+    setErrorMessage(null);
+    setResult(null);
+
+    // 1. Send Email Notification (Fire and forget)
+    sendAuditNotification(formData).catch(err => console.error("Email dispatch error:", err));
+
+    // 2. Submit to HubSpot (Fire and forget)
+    submitToHubSpot(formData).catch(err => console.error("HubSpot dispatch error:", err));
+    
+    // 3. Generate AI Audit
+    try {
+      const data = await generateAudit(formData);
+      setResult(data);
+      setStep(5); // Move to results step
+    } catch (e: any) {
+      console.error(e);
+      const capacityMsg = "Our analysis engine is currently at capacity. Please schedule a brief call instead to review your data manually.";
+      setErrorMessage(capacityMsg);
+      setLoading(false);
+      // Auto-trigger Calendly modal on failure so we don't lose the lead
+      handleReviewClick();
+    }
+  };
+
   const renderStep1 = () => (
     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="grid md:grid-cols-2 gap-4">
+        <div className="md:col-span-2">
+            <label className="block text-[#D4DBE2] text-sm font-bold mb-2">Your Name</label>
+            <input 
+                type="text" 
+                value={formData.contactName}
+                onChange={(e) => handleInputChange('contactName', e.target.value)}
+                placeholder="John Smith"
+                className="w-full bg-[#051120] border border-[#D4DBE2]/20 rounded-lg p-3 text-white focus:ring-2 focus:ring-[#C47F2A] outline-none"
+            />
+        </div>
         <div>
             <label className="block text-[#D4DBE2] text-sm font-bold mb-2">Business Name</label>
             <input 
@@ -135,7 +152,7 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
       </div>
       <Button 
         onClick={handleNext} 
-        disabled={!formData.businessName || !formData.industry || !formData.email || !formData.phone} 
+        disabled={!formData.contactName || !formData.businessName || !formData.industry || !formData.email || !formData.phone} 
         className="w-full"
       >
         Next Step <ArrowRight size={18} />
@@ -247,18 +264,26 @@ const BusinessAudit: React.FC<BusinessAuditProps> = ({ onCtaClick }) => {
                  className="w-full bg-[#051120] border border-[#D4DBE2]/20 rounded-lg p-3 text-white focus:ring-2 focus:ring-[#C47F2A] outline-none min-h-[80px] text-sm"
             />
         </div>
-        <div className="flex gap-4 items-center">
-            <button onClick={() => setStep(3)} className="text-[#D4DBE2] underline text-sm">Back</button>
-            <Button onClick={handleSubmit} variant="ai" disabled={loading} className="flex-1">
-                 {loading ? <><Loader2 className="animate-spin" /> Analyzing Business...</> : <><Sparkles size={20} /> Generate Audit</>}
-            </Button>
-        </div>
+        
         {errorMessage && (
-            <div className="flex items-center gap-2 text-red-300 bg-red-900/20 px-4 py-2 rounded-lg border border-red-500/30 text-sm">
+            <div className="flex items-center gap-2 text-red-300 bg-red-900/20 px-4 py-2 rounded-lg border border-red-500/30 text-sm mb-4">
                 <AlertCircle size={16} className="flex-shrink-0" />
                 <span>{errorMessage}</span>
             </div>
         )}
+
+        <div className="flex gap-4 items-center">
+            <button onClick={() => setStep(3)} className="text-[#D4DBE2] underline text-sm">Back</button>
+            {errorMessage ? (
+                <Button onClick={handleReviewClick} variant="primary" className="flex-1 bg-red-600 hover:bg-red-700 border-red-500 shadow-red-500/20">
+                    Schedule Manual Review <ArrowRight size={18} />
+                </Button>
+            ) : (
+                <Button onClick={handleSubmit} variant="ai" disabled={loading} className="flex-1">
+                    {loading ? <><Loader2 className="animate-spin" /> Analyzing Business...</> : <><Sparkles size={20} /> Generate Audit</>}
+                </Button>
+            )}
+        </div>
       </div>
   );
 

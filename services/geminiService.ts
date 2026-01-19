@@ -54,6 +54,7 @@ export const generateAudit = async (data: AuditData | string): Promise<AuditResu
     promptContext = `
       Analyze this business profile for a financial audit:
       - Business Name: ${data.businessName}
+      - Contact Person: ${data.contactName}
       - Industry: ${data.industry}
       - Monthly Revenue: ${data.revenue}
       - Employee Count: ${data.employees}

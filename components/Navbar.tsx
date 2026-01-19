@@ -11,16 +11,16 @@ interface NavbarProps {
 
 const LogoIcon = () => (
   <svg width="48" height="48" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
-    {/* Shield Background */}
-    <path d="M50 0C50 0 15 5 5 35V60C5 85 50 120 50 120C50 120 95 85 95 60V35C85 5 50 0 50 0Z" fill="#0B1F3A"/>
+    {/* Shield Background with Grey Border */}
+    <path d="M50 0C50 0 15 5 5 35V60C5 85 50 120 50 120C50 120 95 85 95 60V35C85 5 50 0 50 0Z" fill="#0B1F3A" stroke="#718096" strokeWidth="3"/>
     
-    {/* Graph Bars */}
-    <rect x="25" y="55" width="10" height="35" rx="2" fill="white"/>
-    <rect x="45" y="40" width="10" height="50" rx="2" fill="white"/>
-    <rect x="65" y="50" width="10" height="40" rx="2" fill="white"/>
+    {/* Graph Bars - Pill Shaped */}
+    <rect x="30" y="55" width="10" height="30" rx="5" fill="white"/>
+    <rect x="45" y="40" width="10" height="45" rx="5" fill="white"/>
+    <rect x="60" y="50" width="10" height="35" rx="5" fill="white"/>
     
-    {/* Checkmark */}
-    <path d="M50 95L65 110L95 65" stroke="#C47F2A" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round"/>
+    {/* Checkmark Overlay */}
+    <path d="M55 90L68 102L92 65" stroke="#C47F2A" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -51,9 +51,12 @@ const Navbar: React.FC<NavbarProps> = ({ onCtaClick, currentView, setView }) => 
           {/* Logo Area */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavClick('top')}>
              <LogoIcon />
-             <div className="flex flex-col justify-center h-full">
+             <div className="flex flex-col justify-center">
                 <span className="text-[#0B1F3A] font-extrabold text-2xl tracking-tighter leading-none">
                   IronClad
+                </span>
+                <span className="text-[#C47F2A] text-[0.6rem] font-bold tracking-widest uppercase leading-none mt-1">
+                  Accounting Services
                 </span>
              </div>
           </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, MapPin, Send } from 'lucide-react';
 import Button from './Button';
 
 const Contact: React.FC = () => {
@@ -18,7 +18,7 @@ const Contact: React.FC = () => {
     const body = encodeURIComponent(
       `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
     );
-    window.location.href = `mailto:Lee@ironcladcas.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:Admin@ironcladcas.com?subject=${subject}&body=${body}`;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -51,18 +51,7 @@ const Contact: React.FC = () => {
                 <div>
                   <h3 className="text-white font-bold text-lg">Email Us</h3>
                   <p className="text-[#D4DBE2]/60 text-sm mb-1">Direct access to our strategy team.</p>
-                  <a href="mailto:Lee@ironcladcas.com" className="text-white hover:text-[#C47F2A] transition-colors font-medium">Lee@ironcladcas.com</a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="bg-[#102A4C] p-3 rounded-lg border border-[#D4DBE2]/10">
-                  <Phone className="text-[#C47F2A] h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-lg">Call Us</h3>
-                  <p className="text-[#D4DBE2]/60 text-sm mb-1">Mon-Fri from 8am to 6pm EST.</p>
-                  <a href="tel:5166391633" className="text-white hover:text-[#C47F2A] transition-colors font-medium">(516) 639-1633</a>
+                  <a href="mailto:Admin@ironcladcas.com" className="text-white hover:text-[#C47F2A] transition-colors font-medium">Admin@ironcladcas.com</a>
                 </div>
               </div>
 

@@ -14,6 +14,7 @@ export interface AuditResult {
 }
 
 export interface AuditData {
+  contactName: string;
   businessName: string;
   industry: string;
   email: string;
